@@ -22,6 +22,7 @@ Resources:
         - 0
         - !GetAZs
           Ref: "AWS::Region"
+      MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
       Tags:
       - Key: Name
@@ -34,6 +35,7 @@ Resources:
         - 1
         - !GetAZs
           Ref: "AWS::Region"
+      MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
       Tags:
       - Key: Name
@@ -46,6 +48,7 @@ Resources:
         - 2
         - !GetAZs
           Ref: "AWS::Region"
+      MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
       Tags:
       - Key: Name
