@@ -10,6 +10,7 @@ tar -xzf ./latest.tar.gz
 cp -r ./wordpress/* /var/www/html/
 groupadd www
 usermod -a -G www ec2-user
+usermod -a -G www apache
 chown -R root:www /var/www/
 chmod 2775 /var/www/
 find /var/www/ -type d -exec sudo chmod 2775 {} +
