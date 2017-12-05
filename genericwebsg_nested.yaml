@@ -103,3 +103,19 @@ Resources:
       FromPort: 3306
       ToPort: 3306
       SourceSecurityGroupId: !GetAtt WebSG.GroupId
+Outputs:
+  BastionSG:
+    Description: Bastion Security Group
+    Value: !Ref BastionSG
+    Export:
+      Name: !Sub "${AWS::StackName}-BastionSG"
+  WebSG:
+    Description: Web Server Security Group
+    Value: !Ref WebSG
+    Export:
+      Name: !Sub "${AWS::StackName}-WebSG"
+  DBSG:
+    Description: Database Security Group
+    Value: !Ref DBSG
+    Export:
+      Name: !Sub "${AWS::StackName}-DBSG"
