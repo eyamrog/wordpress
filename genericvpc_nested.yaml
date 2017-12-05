@@ -7,16 +7,19 @@ Resources:
   VirtualPrivateCloud:
     Type: "AWS::EC2::VPC"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Virtual Private Cloud
       CidrBlock: 10.0.0.0/16
       InstanceTenancy: default
       EnableDnsSupport: true
       EnableDnsHostnames: false
-      Tags:
-      - Key: Name
-        Value: Virtual Private Cloud
   PublicSubnetA:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Public Subnet A
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: !Select
         - 0
@@ -24,12 +27,12 @@ Resources:
           Ref: "AWS::Region"
       MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Public Subnet A
   PublicSubnetB:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Public Subnet B
       CidrBlock: 10.0.2.0/24
       AvailabilityZone: !Select
         - 1
@@ -37,12 +40,12 @@ Resources:
           Ref: "AWS::Region"
       MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Public Subnet B
   PublicSubnetC:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Public Subnet C
       CidrBlock: 10.0.3.0/24
       AvailabilityZone: !Select
         - 2
@@ -50,45 +53,42 @@ Resources:
           Ref: "AWS::Region"
       MapPublicIpOnLaunch: true
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Public Subnet C
   PrivateSubnetA:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Private Subnet A
       CidrBlock: 10.0.11.0/24
       AvailabilityZone: !Select
         - 0
         - !GetAZs
           Ref: "AWS::Region"
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Private Subnet A
   PrivateSubnetB:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Private Subnet B
       CidrBlock: 10.0.12.0/24
       AvailabilityZone: !Select
         - 1
         - !GetAZs
           Ref: "AWS::Region"
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Private Subnet B
   PrivateSubnetC:
     Type: "AWS::EC2::Subnet"
     Properties:
+      Tags:
+      - Key: Name
+        Value: Private Subnet C
       CidrBlock: 10.0.13.0/24
       AvailabilityZone: !Select
         - 2
         - !GetAZs
           Ref: "AWS::Region"
       VpcId: !Ref VirtualPrivateCloud
-      Tags:
-      - Key: Name
-        Value: Private Subnet C
   InternetGateway:
     Type: "AWS::EC2::InternetGateway"
     Properties:
