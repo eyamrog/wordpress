@@ -56,6 +56,15 @@ Resources:
       VpcId:
         Fn::ImportValue:
           !Sub "${VPCStackName}-VirtualPrivateCloud"
+  WebServerListener1:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      Protocol: HTTP
+      Port: 80
+      LoadBalancerArn: !Ref WebServerALB
+      DefaultActions:
+      - TargetGroupArn: !Ref WebServerTG1
+        Type: forward
   WebServerReadALB:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
@@ -96,6 +105,15 @@ Resources:
       VpcId:
         Fn::ImportValue:
           !Sub "${VPCStackName}-VirtualPrivateCloud"
+  WebServerReadListener1:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      Protocol: HTTP
+      Port: 80
+      LoadBalancerArn: !Ref WebServerReadALB
+      DefaultActions:
+      - TargetGroupArn: !Ref WebServerReadTG1
+        Type: forward
 Outputs:
   WebServerALB:
     Description: Web Server Application Load Balancer
@@ -107,6 +125,11 @@ Outputs:
     Value: !Ref WebServerTG1
     Export:
       Name: !Sub "${AWS::StackName}-WebServerTG1"
+  WebServerListener1:
+    Description: Web Server Listener 1
+    Value: !Ref WebServerListener1
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerListener1"
   WebServerReadALB:
     Description: Web Server Application Load Balancer for Read Users
     Value: !Ref WebServerReadALB
@@ -117,3 +140,8 @@ Outputs:
     Value: !Ref WebServerReadTG1
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadTG1"
+  WebServerReadListener1:
+    Description: Web Server Listener 1 for Read Users
+    Value: !Ref WebServerReadListener1
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadListener1"
