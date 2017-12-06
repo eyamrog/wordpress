@@ -34,6 +34,28 @@ Resources:
       SecurityGroups:
       - Fn::ImportValue:
           !Sub "${SGStackName}-WebSG"
+  WebServerTG1:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: WebServerTG1
+      Tags:
+      - Key: Name
+        Value: WebServerTG1
+      Protocol: HTTP
+      Port: 80
+      TargetType: instance
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /albhealthcheck.html
+      HealthCheckPort: traffic-port
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 10
+      Matcher:
+        HttpCode: 200
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${VPCStackName}-VirtualPrivateCloud"
   WebServerReadALB:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
@@ -52,14 +74,46 @@ Resources:
       SecurityGroups:
       - Fn::ImportValue:
           !Sub "${SGStackName}-WebSG"
+  WebServerReadTG1:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: WebServerReadTG1
+      Tags:
+      - Key: Name
+        Value: WebServerReadTG1
+      Protocol: HTTP
+      Port: 80
+      TargetType: instance
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: /albhealthcheck.html
+      HealthCheckPort: traffic-port
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 10
+      Matcher:
+        HttpCode: 200
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${VPCStackName}-VirtualPrivateCloud"
 Outputs:
   WebServerALB:
     Description: Web Server Application Load Balancer
     Value: !Ref WebServerALB
     Export:
       Name: !Sub "${AWS::StackName}-WebServerALB"
+  WebServerTG1:
+    Description: Web Server ALB Target Group 1
+    Value: !Ref WebServerTG1
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerTG1"
   WebServerReadALB:
-    Description: Web Server Application Load Balancer
+    Description: Web Server Application Load Balancer for Read Users
     Value: !Ref WebServerReadALB
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadALB"
+  WebServerReadTG1:
+    Description: Web Server ALB Target Group 1 for Read Users
+    Value: !Ref WebServerReadTG1
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadTG1"
