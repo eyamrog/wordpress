@@ -34,9 +34,32 @@ Resources:
       SecurityGroups:
       - Fn::ImportValue:
           !Sub "${SGStackName}-WebSG"
+  WebServerReadALB:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: WebServerReadALB
+      Tags:
+      - Key: Name
+        Value: WebServerReadALB
+      Type: application
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      Subnets:
+      - Fn::ImportValue:
+          !Sub "${VPCStackName}-PublicSubnetA"
+      - Fn::ImportValue:
+          !Sub "${VPCStackName}-PublicSubnetB"
+      SecurityGroups:
+      - Fn::ImportValue:
+          !Sub "${SGStackName}-WebSG"
 Outputs:
   WebServerALB:
     Description: Web Server Application Load Balancer
     Value: !Ref WebServerALB
     Export:
       Name: !Sub "${AWS::StackName}-WebServerALB"
+  WebServerReadALB:
+    Description: Web Server Application Load Balancer
+    Value: !Ref WebServerReadALB
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadALB"
