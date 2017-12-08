@@ -52,9 +52,38 @@ Resources:
           Ebs:
             VolumeSize: 8
       AssociatePublicIpAddress: true
+  WebServerReadLC:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Properties:
+      ImageId: ami-5babc921
+      IamInstanceProfile: S3-Admin-Access
+      KeyName: !Ref WebServerKeyName
+      EbsOptimized: false
+      UserData:
+        Fn::Base64:
+          !Join
+            - ""
+            - - "#!/bin/bash\n"
+              - "aws s3 sync --delete s3://eyamrog-wordpressmedia/ /var/www/html/wp-content/uploads/\n"
+              - "aws s3 sync --delete s3://eyamrog-wordpresscode/ /var/www/html/\n"
+      InstanceType: t2.micro
+      InstanceMonitoring: false
+      SecurityGroups:
+        - Fn::ImportValue:
+            !Sub "${SGStackName}-WebSG"
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+      AssociatePublicIpAddress: true
 Outputs:
   WebServerLC:
     Description: Web Server Launch Configuration
     Value: !Ref WebServerLC
     Export:
       Name: !Sub "${AWS::StackName}-WebServerLC"
+  WebServerReadLC:
+    Description: Web Server Launch Configuration
+    Value: !Ref WebServerReadLC
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadLC"

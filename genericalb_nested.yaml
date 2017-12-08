@@ -21,26 +21,26 @@ Resources:
     Properties:
       Name: WebServerALB
       Tags:
-      - Key: Name
-        Value: WebServerALB
+        - Key: Name
+          Value: WebServerALB
       Type: application
       IpAddressType: ipv4
       Scheme: internet-facing
       Subnets:
-      - Fn::ImportValue:
-          !Sub "${VPCStackName}-PublicSubnetA"
-      - Fn::ImportValue:
-          !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetA"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetB"
       SecurityGroups:
-      - Fn::ImportValue:
-          !Sub "${SGStackName}-WebSG"
+        - Fn::ImportValue:
+            !Sub "${SGStackName}-WebSG"
   WebServerTG1:
     Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
     Properties:
       Name: WebServerTG1
       Tags:
-      - Key: Name
-        Value: WebServerTG1
+        - Key: Name
+          Value: WebServerTG1
       Protocol: HTTP
       Port: 80
       TargetType: instance
@@ -63,33 +63,33 @@ Resources:
       Port: 80
       LoadBalancerArn: !Ref WebServerALB
       DefaultActions:
-      - TargetGroupArn: !Ref WebServerTG1
-        Type: forward
+        - TargetGroupArn: !Ref WebServerTG1
+          Type: forward
   WebServerReadALB:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
     Properties:
       Name: WebServerReadALB
       Tags:
-      - Key: Name
-        Value: WebServerReadALB
+        - Key: Name
+          Value: WebServerReadALB
       Type: application
       IpAddressType: ipv4
       Scheme: internet-facing
       Subnets:
-      - Fn::ImportValue:
-          !Sub "${VPCStackName}-PublicSubnetA"
-      - Fn::ImportValue:
-          !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetA"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetB"
       SecurityGroups:
-      - Fn::ImportValue:
-          !Sub "${SGStackName}-WebSG"
+        - Fn::ImportValue:
+            !Sub "${SGStackName}-WebSG"
   WebServerReadTG1:
     Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
     Properties:
       Name: WebServerReadTG1
       Tags:
-      - Key: Name
-        Value: WebServerReadTG1
+        - Key: Name
+          Value: WebServerReadTG1
       Protocol: HTTP
       Port: 80
       TargetType: instance
@@ -112,8 +112,8 @@ Resources:
       Port: 80
       LoadBalancerArn: !Ref WebServerReadALB
       DefaultActions:
-      - TargetGroupArn: !Ref WebServerReadTG1
-        Type: forward
+        - TargetGroupArn: !Ref WebServerReadTG1
+          Type: forward
 Outputs:
   WebServerALB:
     Description: Web Server Application Load Balancer

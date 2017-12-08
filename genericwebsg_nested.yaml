@@ -15,21 +15,21 @@ Resources:
       GroupName: BastionSG
       GroupDescription: BastionSG
       Tags:
-      - Key: Name
-        Value: BastionSG
+        - Key: Name
+          Value: BastionSG
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 22
-        ToPort: 22
-        CidrIp: 187.189.186.5/32
-        Description: Allows SSH from Administrator
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 187.189.186.5/32
+          Description: Allows SSH from Administrator
       SecurityGroupEgress:
-      - IpProtocol: -1
-        CidrIp: 0.0.0.0/0
-        Description: Allows irrestrict IPv4 outbound traffic
-      - IpProtocol: -1
-        CidrIpv6: ::/0
-        Description: Allows irrestrict IPv6 outbound traffic
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allows irrestrict IPv4 outbound traffic
+        - IpProtocol: -1
+          CidrIpv6: ::/0
+          Description: Allows irrestrict IPv6 outbound traffic
       VpcId: !ImportValue
         Fn::Sub: "${VPCStackName}-VirtualPrivateCloud"
   WebSG:
@@ -38,36 +38,36 @@ Resources:
       GroupName: WebSG
       GroupDescription: WebSG
       Tags:
-      - Key: Name
-        Value: WebSG
+        - Key: Name
+          Value: WebSG
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
-        Description: Allows HTTP from IPv4 Users
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIpv6: ::/0
-        Description: Allows HTTP from IPv6 Users
-      - IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        CidrIp: 0.0.0.0/0
-        Description: Allows HTTP from IPv4 Users
-      - IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        CidrIpv6: ::/0
-        Description: Allows HTTP from IPv6 Users
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: Allows HTTP from IPv4 Users
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIpv6: ::/0
+          Description: Allows HTTP from IPv6 Users
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          Description: Allows HTTP from IPv4 Users
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIpv6: ::/0
+          Description: Allows HTTP from IPv6 Users
       SecurityGroupEgress:
-      - IpProtocol: -1
-        CidrIp: 0.0.0.0/0
-        Description: Allows irrestrict IPv4 outbound traffic
-      - IpProtocol: -1
-        CidrIpv6: ::/0
-        Description: Allows irrestrict IPv6 outbound traffic
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allows irrestrict IPv4 outbound traffic
+        - IpProtocol: -1
+          CidrIpv6: ::/0
+          Description: Allows irrestrict IPv6 outbound traffic
       VpcId: !ImportValue
         Fn::Sub: "${VPCStackName}-VirtualPrivateCloud"
   WebSGIngress:
@@ -84,15 +84,15 @@ Resources:
       GroupName: DBSG
       GroupDescription: DBSG
       Tags:
-      - Key: Name
-        Value: DBSG
+        - Key: Name
+          Value: DBSG
       SecurityGroupEgress:
-      - IpProtocol: -1
-        CidrIp: 0.0.0.0/0
-        Description: Allows irrestrict IPv4 outbound traffic
-      - IpProtocol: -1
-        CidrIpv6: ::/0
-        Description: Allows irrestrict IPv6 outbound traffic
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allows irrestrict IPv4 outbound traffic
+        - IpProtocol: -1
+          CidrIpv6: ::/0
+          Description: Allows irrestrict IPv6 outbound traffic
       VpcId: !ImportValue
         Fn::Sub: "${VPCStackName}-VirtualPrivateCloud"
   DBSGIngress:
