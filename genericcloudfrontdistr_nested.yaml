@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates CloudFront Web Distribution for Web Servers
+Resources:
+  WebServerCFOAI:
+    Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Origin Access Identity for CloudFront Distribution
+  WebServerCFrontDistr:
+    Type: "AWS::CloudFront::Distribution"
+    DependsOn: WebServerCFOAI
+    Properties:
+      Tags:
+        - Key: Name
+          Value: WebServerCFrontDistr
+      DistributionConfig:
+        Comment: CloudFront Distribution for WordPress media
+        Origins:
+          - DomainName: eyamrog-wordpressmedia.s3.amazonaws.com
+            Id: WPS3Origin
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Sub "origin-access-identity/cloudfront/${WebServerCFOAI}"
+        HttpVersion: http2
+        Enabled: true
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: allow-all
+          AllowedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          TargetOriginId: WPS3Origin
+
+Outputs:
+  WebServerCFOAI:
+    Description: Web Server CloudFront Origin Access Identity
+    Value: !Ref WebServerCFOAI
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCFOAI"
+  WebServerCFrontDistr:
+    Description: Web Server CloudFront Distribution
+    Value: !Ref WebServerCFrontDistr
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCFrontDistr"
