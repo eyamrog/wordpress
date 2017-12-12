@@ -31,6 +31,8 @@ Resources:
             !Sub "${VPCStackName}-PublicSubnetA"
         - Fn::ImportValue:
             !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetC"
       SecurityGroups:
         - Fn::ImportValue:
             !Sub "${SGStackName}-WebSG"
@@ -80,6 +82,8 @@ Resources:
             !Sub "${VPCStackName}-PublicSubnetA"
         - Fn::ImportValue:
             !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetC"
       SecurityGroups:
         - Fn::ImportValue:
             !Sub "${SGStackName}-WebSG"
