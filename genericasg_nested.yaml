@@ -52,6 +52,30 @@ Resources:
           Ebs:
             VolumeSize: 8
       AssociatePublicIpAddress: true
+  WebServerASG:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: WebServerASG
+          PropagateAtLaunch: yes
+      LaunchConfigurationName: !Ref WebServerLC
+      TargetGroupARNs:
+        - Fn::ImportValue:
+            !Sub "${ALBStackName}-WebServerTG1"
+      VPCZoneIdentifier:
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetA"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetC"
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 300
+      DesiredCapacity: 0
+      MinSize: 0
+      MaxSize: 1
+      Cooldown: 60
   WebServerReadLC:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
@@ -76,14 +100,48 @@ Resources:
           Ebs:
             VolumeSize: 8
       AssociatePublicIpAddress: true
+  WebServerReadASG:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: WebServerReadASG
+          PropagateAtLaunch: yes
+      LaunchConfigurationName: !Ref WebServerReadLC
+      TargetGroupARNs:
+        - Fn::ImportValue:
+            !Sub "${ALBStackName}-WebServerReadTG1"
+      VPCZoneIdentifier:
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetA"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetB"
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetC"
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 300
+      DesiredCapacity: 0
+      MinSize: 0
+      MaxSize: 8
+      Cooldown: 60
 Outputs:
   WebServerLC:
     Description: Web Server Launch Configuration
     Value: !Ref WebServerLC
     Export:
       Name: !Sub "${AWS::StackName}-WebServerLC"
+  WebServerASG:
+    Description: Web Server Auto Scaling Group
+    Value: !Ref WebServerASG
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerASG"
   WebServerReadLC:
     Description: Web Server Launch Configuration
     Value: !Ref WebServerReadLC
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadLC"
+  WebServerReadASG:
+    Description: Web Server Auto Scaling Group for Read Users
+    Value: !Ref WebServerReadASG
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadASG"
