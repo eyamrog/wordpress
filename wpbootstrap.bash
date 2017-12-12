@@ -2,9 +2,9 @@
 yum -y update
 yum -y install httpd24 php71 php71-mysqlnd stress
 mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.orig
-aws s3 cp s3://eyamrog-bucket/wordpress/httpd24.conf /etc/httpd/conf/httpd.conf
-aws s3 cp s3://eyamrog-bucket/wordpress/albhealthcheck.html /var/www/html/
-aws s3 cp s3://eyamrog-bucket/wordpress/.htaccess /var/www/html/
+aws s3 cp s3://eyamrog-wordpress/httpd24.conf /etc/httpd/conf/httpd.conf
+aws s3 cp s3://eyamrog-wordpress/albhealthcheck.html /var/www/html/
+aws s3 cp s3://eyamrog-wordpress/.htaccess /var/www/html/
 wget https://wordpress.org/latest.tar.gz
 tar -xzf ./latest.tar.gz
 cp -r ./wordpress/* /var/www/html/
