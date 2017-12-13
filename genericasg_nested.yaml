@@ -28,11 +28,39 @@ Parameters:
     Default: AWS20171012Coda
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
 Resources:
+  WebServerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: S3-Admin-Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: S3AdminAccess
+                Effect: Allow
+                Action: s3:*
+                Resource: "*"
+  WebServerInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref WebServerRole
   WebServerLC:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
       ImageId: ami-4fa0c235
-      IamInstanceProfile: S3-Admin-Access
+      IamInstanceProfile: !Ref WebServerInstanceProfile
       KeyName: !Ref WebServerKeyName
       EbsOptimized: false
       UserData:
@@ -80,7 +108,7 @@ Resources:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
       ImageId: ami-5babc921
-      IamInstanceProfile: S3-Admin-Access
+      IamInstanceProfile: !Ref WebServerInstanceProfile
       KeyName: !Ref WebServerKeyName
       EbsOptimized: false
       UserData:
