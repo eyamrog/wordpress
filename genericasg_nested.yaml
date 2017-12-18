@@ -152,6 +152,14 @@ Resources:
       MinSize: 0
       MaxSize: 8
       Cooldown: 60
+      NotificationConfigurations:
+        - TopicARN:
+            !Ref WebServerReadNotifications
+          NotificationTypes:
+            - autoscaling:EC2_INSTANCE_LAUNCH
+            - autoscaling:EC2_INSTANCE_LAUNCH_ERROR
+            - autoscaling:EC2_INSTANCE_TERMINATE
+            - autoscaling:EC2_INSTANCE_TERMINATE_ERROR
   WebServerReadScaleOutPolicy:
     Type: "AWS::AutoScaling::ScalingPolicy"
     Properties:
@@ -176,10 +184,10 @@ Resources:
           MetricIntervalUpperBound: 0
           ScalingAdjustment: -1
       EstimatedInstanceWarmup: 60
-  WebServerCPUUtilizationHighAlarm:
+  WebServerReadCPUUtilizationHighAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
-      AlarmName: WebServerCPUUtilizationHighAlarm
+      AlarmName: WebServerReadCPUUtilizationHighAlarm
       AlarmDescription: Breach threshold of 75% of High CPUUtilization
       MetricName: CPUUtilization
       ComparisonOperator: GreaterThanOrEqualToThreshold
@@ -195,10 +203,10 @@ Resources:
       Statistic: Average
       Period: 300
       TreatMissingData: missing
-  WebServerCPUUtilizationLowAlarm:
+  WebServerReadCPUUtilizationLowAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
-      AlarmName: WebServerCPUUtilizationLowAlarm
+      AlarmName: WebServerReadCPUUtilizationLowAlarm
       AlarmDescription: Breach threshold of 25% of Low CPUUtilization
       MetricName: CPUUtilization
       ComparisonOperator: LessThanOrEqualToThreshold
@@ -214,6 +222,17 @@ Resources:
       Statistic: Average
       Period: 300
       TreatMissingData: missing
+  WebServerReadNotifications:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: WebServerReadNotifications
+      DisplayName: WebServerReadNotifications
+  WebServerReadNotificationsSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: eyamrog@gmail.com
+      Protocol: email
+      TopicArn: !Ref WebServerReadNotifications
 Outputs:
   WebServerLC:
     Description: Web Server Launch Configuration
@@ -245,29 +264,42 @@ Outputs:
     Value: !Ref WebServerReadScaleInPolicy
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadScaleInPolicy"
-  WebServerCPUUtilizationHighAlarmName:
-    Description: Alarm name
-    Value: !Ref WebServerCPUUtilizationHighAlarm
+  WebServerReadCPUUtilizationHighAlarmName:
+    Description: WebServerReadCPUUtilizationHighAlarmName alarm name
+    Value: !Ref WebServerReadCPUUtilizationHighAlarm
     Export:
-      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationHighAlarmName"
-  WebServerCPUUtilizationHighAlarmArn:
-    Description: Alarm ARN
+      Name: !Sub "${AWS::StackName}-WebServerReadCPUUtilizationHighAlarmName"
+  WebServerReadCPUUtilizationHighAlarmArn:
+    Description: WebServerReadCPUUtilizationHighAlarmArn alarm ARN
     Value:
       !GetAtt
-        - WebServerCPUUtilizationHighAlarm
+        - WebServerReadCPUUtilizationHighAlarm
         - Arn
     Export:
-      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationHighAlarmArn"
-  WebServerCPUUtilizationLowAlarmName:
-    Description: Alarm name
-    Value: !Ref WebServerCPUUtilizationLowAlarm
+      Name: !Sub "${AWS::StackName}-WebServerReadCPUUtilizationHighAlarmArn"
+  WebServerReadCPUUtilizationLowAlarmName:
+    Description: WebServerReadCPUUtilizationLowAlarmName alarm name
+    Value: !Ref WebServerReadCPUUtilizationLowAlarm
     Export:
-      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationLowAlarmName"
-  WebServerCPUUtilizationLowAlarmArn:
-    Description: Alarm ARN
+      Name: !Sub "${AWS::StackName}-WebServerReadCPUUtilizationLowAlarmName"
+  WebServerReadCPUUtilizationLowAlarmArn:
+    Description: WebServerReadCPUUtilizationLowAlarmArn alarm ARN
     Value:
       !GetAtt
-        - WebServerCPUUtilizationLowAlarm
+        - WebServerReadCPUUtilizationLowAlarm
         - Arn
     Export:
-      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationLowAlarmArn"
+      Name: !Sub "${AWS::StackName}-WebServerReadCPUUtilizationLowAlarmArn"
+  WebServerReadNotificationsArn:
+    Description: WebServerReadNotifications topic ARN
+    Value: !Ref WebServerReadNotifications
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadNotificationsArn"
+  WebServerReadNotificationsName:
+    Description: WebServerReadNotifications topic name
+    Value:
+      !GetAtt
+        - WebServerReadNotifications
+        - TopicName
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadNotificationsName"
