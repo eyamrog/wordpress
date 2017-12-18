@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates Relational Database Service Instance
+Parameters:
+  VPCStackName:
+    Description: Name of the stack that contains the VPC resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default: WebVPC
+  SGStackName:
+    Description: Name of the stack that contains the Security Group resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default: WebSG
+Resources:
+  WebRDSSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: Subnet Group for RDS Database Instance
+      Tags:
+        - Key: Name
+          Value: WebRDSSubnetGroup
+      SubnetIds:
+        - !ImportValue
+            Fn::Sub: "${VPCStackName}-PrivateSubnetA"
+        - !ImportValue
+            Fn::Sub: "${VPCStackName}-PrivateSubnetB"
+        - !ImportValue
+            Fn::Sub: "${VPCStackName}-PrivateSubnetC"
+  WebRDS:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: WebRDS
+      DBInstanceIdentifier: webdatabase2
+      Engine: mysql
+      LicenseModel: general-public-license
+      DBName: webdatabase2
+      MasterUsername: webdatabase2
+      MasterUserPassword: webdatabase2
+      DBSubnetGroupName: !Ref WebRDSSubnetGroup
+      VPCSecurityGroups:
+        - !ImportValue
+            Fn::Sub: "${SGStackName}-DBSG"
+      PubliclyAccessible: false
+      DBInstanceClass: db.t2.micro
+      StorageType: gp2
+      AllocatedStorage: 100
+      MultiAZ: true
+Outputs:
+  WebDBInstanceIdentifier:
+    Description: Relational Database Service Instance Identifier
+    Value: !Ref WebRDS
+    Export:
+      Name: !Sub "${AWS::StackName}-WebDBInstanceIdentifier"
+  WebDBEndpointAddress:
+    Description: Relational Database Service Instance Endpoint Address
+    Value:
+      !GetAtt
+        - WebRDS
+        - Endpoint.Address
+    Export:
+      Name: !Sub "${AWS::StackName}-WebDBEndpointAddress"
+  WebDBEndpointPort:
+    Description: Relational Database Service Instance Endpoint Port
+    Value:
+      !GetAtt
+        - WebRDS
+        - Endpoint.Port
+    Export:
+      Name: !Sub "${AWS::StackName}-WebDBEndpointPort"
