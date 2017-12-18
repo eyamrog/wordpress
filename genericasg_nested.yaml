@@ -152,6 +152,68 @@ Resources:
       MinSize: 0
       MaxSize: 8
       Cooldown: 60
+  WebServerReadScaleOutPolicy:
+    Type: "AWS::AutoScaling::ScalingPolicy"
+    Properties:
+      AutoScalingGroupName:
+        !Ref WebServerReadASG
+      PolicyType: StepScaling
+      AdjustmentType: ChangeInCapacity
+      StepAdjustments:
+        - MetricIntervalLowerBound: 0
+          MetricIntervalUpperBound: ""
+          ScalingAdjustment: 2
+      EstimatedInstanceWarmup: 60
+  WebServerReadScaleInPolicy:
+    Type: "AWS::AutoScaling::ScalingPolicy"
+    Properties:
+      AutoScalingGroupName:
+        !Ref WebServerReadASG
+      PolicyType: StepScaling
+      AdjustmentType: ChangeInCapacity
+      StepAdjustments:
+        - MetricIntervalLowerBound: ""
+          MetricIntervalUpperBound: 0
+          ScalingAdjustment: -1
+      EstimatedInstanceWarmup: 60
+  WebServerCPUUtilizationHighAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: WebServerCPUUtilizationHighAlarm
+      AlarmDescription: Breach threshold of 75% of High CPUUtilization
+      MetricName: CPUUtilization
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 75
+      EvaluationPeriods: 1
+      AlarmActions:
+        - !Ref WebServerReadScaleOutPolicy
+      Namespace: AWS/EC2
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            !Ref WebServerReadASG
+      Statistic: Average
+      Period: 300
+      TreatMissingData: missing
+  WebServerCPUUtilizationLowAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: WebServerCPUUtilizationLowAlarm
+      AlarmDescription: Breach threshold of 25% of Low CPUUtilization
+      MetricName: CPUUtilization
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Threshold: 25
+      EvaluationPeriods: 1
+      AlarmActions:
+        - !Ref WebServerReadScaleInPolicy
+      Namespace: AWS/EC2
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value:
+            !Ref WebServerReadASG
+      Statistic: Average
+      Period: 300
+      TreatMissingData: missing
 Outputs:
   WebServerLC:
     Description: Web Server Launch Configuration
@@ -173,3 +235,39 @@ Outputs:
     Value: !Ref WebServerReadASG
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadASG"
+  WebServerReadScaleOutPolicy:
+    Description: Web Server Auto Scaling Scale Out Policy for Read Users
+    Value: !Ref WebServerReadScaleOutPolicy
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleOutPolicy"
+  WebServerReadScaleInPolicy:
+    Description: Web Server Auto Scaling Scale In Policy for Read Users
+    Value: !Ref WebServerReadScaleInPolicy
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleInPolicy"
+  WebServerCPUUtilizationHighAlarmName:
+    Description: Alarm name
+    Value: !Ref WebServerCPUUtilizationHighAlarm
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationHighAlarmName"
+  WebServerCPUUtilizationHighAlarmArn:
+    Description: Alarm ARN
+    Value:
+      !GetAtt
+        - WebServerCPUUtilizationHighAlarm
+        - Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationHighAlarmArn"
+  WebServerCPUUtilizationLowAlarmName:
+    Description: Alarm name
+    Value: !Ref WebServerCPUUtilizationLowAlarm
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationLowAlarmName"
+  WebServerCPUUtilizationLowAlarmArn:
+    Description: Alarm ARN
+    Value:
+      !GetAtt
+        - WebServerCPUUtilizationLowAlarm
+        - Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerCPUUtilizationLowAlarmArn"
