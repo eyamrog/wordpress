@@ -36,12 +36,12 @@ Resources:
       Tags:
         - Key: Name
           Value: WebRDS
-      DBInstanceIdentifier: webdatabase2
+      DBInstanceIdentifier: webdatabase
       Engine: mysql
       LicenseModel: general-public-license
-      DBName: webdatabase2
-      MasterUsername: webdatabase2
-      MasterUserPassword: webdatabase2
+      DBName: webdatabase
+      MasterUsername: webdatabase
+      MasterUserPassword: webdatabase
       DBSubnetGroupName: !Ref WebRDSSubnetGroup
       VPCSecurityGroups:
         - !ImportValue
