@@ -12,4 +12,5 @@ Deploy the CloudFormation Stacks in this order:
 - WebSG: Security Group Stack
 - WebRDS: RDS Instance Stack
 - WebALB: Application Load Balancing Stack
+- Prepare the WordPress AMIs that will be utilized by WebASG
 - WebASG: Auto Scaling Group Stack
