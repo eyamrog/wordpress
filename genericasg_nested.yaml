@@ -195,6 +195,7 @@ Resources:
       EvaluationPeriods: 1
       AlarmActions:
         - !Ref WebServerReadScaleOutPolicy
+        - !Ref WebServerReadScaleOutNotifications
       Namespace: AWS/EC2
       Dimensions:
         - Name: AutoScalingGroupName
@@ -214,6 +215,7 @@ Resources:
       EvaluationPeriods: 1
       AlarmActions:
         - !Ref WebServerReadScaleInPolicy
+        - !Ref WebServerReadScaleInNotifications
       Namespace: AWS/EC2
       Dimensions:
         - Name: AutoScalingGroupName
@@ -233,6 +235,28 @@ Resources:
       Endpoint: eyamrog@gmail.com
       Protocol: email
       TopicArn: !Ref WebServerReadNotifications
+  WebServerReadScaleOutNotifications:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: WebServerReadScaleOutNotifications
+      DisplayName: WebServerReadScaleOutNotifications
+  WebServerReadScaleOutNotificationsSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: eyamrog@gmail.com
+      Protocol: email
+      TopicArn: !Ref WebServerReadScaleOutNotifications
+  WebServerReadScaleInNotifications:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: WebServerReadScaleInNotifications
+      DisplayName: WebServerReadScaleInNotifications
+  WebServerReadScaleInNotificationsSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: eyamrog@gmail.com
+      Protocol: email
+      TopicArn: !Ref WebServerReadScaleInNotifications
 Outputs:
   WebServerLC:
     Description: Web Server Launch Configuration
@@ -303,3 +327,29 @@ Outputs:
         - TopicName
     Export:
       Name: !Sub "${AWS::StackName}-WebServerReadNotificationsName"
+  WebServerReadScaleOutNotificationsArn:
+    Description: WebServerReadScaleOutNotifications topic ARN
+    Value: !Ref WebServerReadScaleOutNotifications
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleOutNotificationsArn"
+  WebServerReadScaleOutNotificationsName:
+    Description: WebServerReadScaleOutNotifications topic name
+    Value:
+      !GetAtt
+        - WebServerReadScaleOutNotifications
+        - TopicName
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleOutNotificationsName"
+  WebServerReadScaleInNotificationsArn:
+    Description: WebServerReadScaleInNotifications topic ARN
+    Value: !Ref WebServerReadScaleInNotifications
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleInNotificationsArn"
+  WebServerReadScaleInNotificationsName:
+    Description: WebServerReadScaleInNotifications topic name
+    Value:
+      !GetAtt
+        - WebServerReadScaleInNotifications
+        - TopicName
+    Export:
+      Name: !Sub "${AWS::StackName}-WebServerReadScaleInNotificationsName"
