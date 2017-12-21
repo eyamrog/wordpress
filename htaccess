@@ -1,6 +1,6 @@
 Options +FollowSymlinks
 RewriteEngine on
-rewriterule ^wp-content/uploads/(.*)$ http://dx2n514fnzcgt.cloudfront.net/$1 [r=301,nc]
+rewriterule ^wp-content/uploads/(.*)$ http://dm8xfooz2wwf2.cloudfront.net/$1 [r=301,nc]
 
 # BEGIN WordPress
 
