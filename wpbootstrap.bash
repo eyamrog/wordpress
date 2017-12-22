@@ -1,6 +1,7 @@
 #!/bin/bash
 yum -y update
 yum -y install httpd24 php71 php71-mysqlnd stress
+cp /etc/crontab /etc/crontab.orig
 mv /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.orig
 aws s3 cp s3://eyamrog-wordpress/httpd24.conf /etc/httpd/conf/httpd.conf
 aws s3 cp s3://eyamrog-wordpress/albhealthcheck.html /var/www/html/
