@@ -59,7 +59,7 @@ Resources:
   WebServerLC:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
-      ImageId: ami-4fa0c235
+      ImageId: ami-aa4e0bd0
       IamInstanceProfile: !Ref WebServerInstanceProfile
       KeyName: !Ref WebServerKeyName
       EbsOptimized: false
@@ -99,7 +99,7 @@ Resources:
         - Fn::ImportValue:
             !Sub "${VPCStackName}-PublicSubnetC"
       HealthCheckType: ELB
-      HealthCheckGracePeriod: 300
+      HealthCheckGracePeriod: 60
       DesiredCapacity: 0
       MinSize: 0
       MaxSize: 1
@@ -107,7 +107,7 @@ Resources:
   WebServerReadLC:
     Type: "AWS::AutoScaling::LaunchConfiguration"
     Properties:
-      ImageId: ami-5babc921
+      ImageId: ami-4454113e
       IamInstanceProfile: !Ref WebServerInstanceProfile
       KeyName: !Ref WebServerKeyName
       EbsOptimized: false
@@ -147,7 +147,7 @@ Resources:
         - Fn::ImportValue:
             !Sub "${VPCStackName}-PublicSubnetC"
       HealthCheckType: ELB
-      HealthCheckGracePeriod: 300
+      HealthCheckGracePeriod: 60
       DesiredCapacity: 0
       MinSize: 0
       MaxSize: 8
@@ -202,7 +202,7 @@ Resources:
           Value:
             !Ref WebServerReadASG
       Statistic: Average
-      Period: 300
+      Period: 60
       TreatMissingData: missing
   WebServerReadCPUUtilizationLowAlarm:
     Type: "AWS::CloudWatch::Alarm"
@@ -222,7 +222,7 @@ Resources:
           Value:
             !Ref WebServerReadASG
       Statistic: Average
-      Period: 300
+      Period: 60
       TreatMissingData: missing
   WebServerReadNotifications:
     Type: "AWS::SNS::Topic"
@@ -232,7 +232,7 @@ Resources:
   WebServerReadNotificationsSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      Endpoint: xyz@example.com
+      Endpoint: eyamrog@gmail.com
       Protocol: email
       TopicArn: !Ref WebServerReadNotifications
   WebServerReadScaleOutNotifications:
@@ -243,7 +243,7 @@ Resources:
   WebServerReadScaleOutNotificationsSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      Endpoint: xyz@example.com
+      Endpoint: eyamrog@gmail.com
       Protocol: email
       TopicArn: !Ref WebServerReadScaleOutNotifications
   WebServerReadScaleInNotifications:
@@ -254,7 +254,7 @@ Resources:
   WebServerReadScaleInNotificationsSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      Endpoint: xyz@example.com
+      Endpoint: eyamrog@gmail.com
       Protocol: email
       TopicArn: !Ref WebServerReadScaleInNotifications
 Outputs:
