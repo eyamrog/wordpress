@@ -7,7 +7,7 @@ Prerequisites:
 - Prepare WordPress AMIs and enable URL Rewrite in the HTTP Server to redirect media requests to the CloudFront Distribution
 
 Deploy the CloudFormation Stacks in this order:
-- WebCFD: CloudFront Stack. Take note of the Distribution DNS Name for configuring the .htaccess file
+- WebCFD: CloudFront Stack. Take note of the Distribution DNS Name for configuring the .htaccess file. Update the S3 Media Bucket with the policy in "wpmediabucketpolicy.json"
 - WebVPC: VPC Stack
 - WebSG: Security Group Stack
 - WebRDS: RDS Instance Stack
