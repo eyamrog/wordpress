@@ -27,6 +27,18 @@ Parameters:
     Type: "AWS::EC2::KeyPair::KeyName"
     Default: AWS20171012Coda
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
+  WPCodeS3BucketName:
+    Description: Name of the existing S3 Bucket where WordPress Code is stored
+    Type: String
+    AllowedPattern: ^[-.a-z0-9]*$
+    Default: eyamrog-wordpresscode
+    ConstraintDescription: Bucket names can contain lowercase letters, numbers, hyphens and periods (.)
+  WPMediaS3BucketName:
+    Description: Name of the existing S3 Bucket where WordPress Media is stored
+    Type: String
+    AllowedPattern: ^[-.a-z0-9]*$
+    Default: eyamrog-wordpressmedia
+    ConstraintDescription: Bucket names can contain lowercase letters, numbers, hyphens and periods (.)
 Resources:
   WebServerRole:
     Type: "AWS::IAM::Role"
@@ -68,8 +80,8 @@ Resources:
           !Join
             - ""
             - - "#!/bin/bash\n"
-              - "aws s3 sync --delete s3://eyamrog-wordpressmedia/ /var/www/html/wp-content/uploads/\n"
-              - "aws s3 sync --delete s3://eyamrog-wordpresscode/ /var/www/html/\n"
+              - !Sub "aws s3 sync --delete s3://${WPMediaS3BucketName}/ /var/www/html/wp-content/uploads/\n"
+              - !Sub "aws s3 sync --delete s3://${WPCodeS3BucketName}/ /var/www/html/\n"
       InstanceType: t2.micro
       InstanceMonitoring: false
       SecurityGroups:
