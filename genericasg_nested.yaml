@@ -128,8 +128,8 @@ Resources:
           !Join
             - ""
             - - "#!/bin/bash\n"
-              - "aws s3 sync --delete s3://eyamrog-wordpressmedia/ /var/www/html/wp-content/uploads/\n"
-              - "aws s3 sync --delete s3://eyamrog-wordpresscode/ /var/www/html/\n"
+              - !Sub "aws s3 sync --delete s3://${WPMediaS3BucketName}/ /var/www/html/wp-content/uploads/\n"
+              - !Sub "aws s3 sync --delete s3://${WPCodeS3BucketName}/ /var/www/html/\n"
       InstanceType: t2.micro
       InstanceMonitoring: false
       SecurityGroups:
