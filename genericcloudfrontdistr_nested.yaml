@@ -1,5 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates CloudFront Web Distribution for Web Servers
+Parameters:
+  WPMediaS3BucketName:
+    Description: Name of the existing S3 Bucket where WordPress Media is stored
+    Type: String
+    AllowedPattern: ^[-.a-z0-9]*$
+    Default: eyamrog-wordpressmedia
+    ConstraintDescription: Bucket names can contain lowercase letters, numbers, hyphens and periods (.)
 Resources:
   WebServerCFOAI:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
@@ -16,7 +23,7 @@ Resources:
       DistributionConfig:
         Comment: CloudFront Distribution for WordPress media
         Origins:
-          - DomainName: eyamrog-wordpressmedia.s3.amazonaws.com
+          - DomainName: !Sub "${WPMediaS3BucketName}.s3.amazonaws.com"
             Id: WPS3Origin
             S3OriginConfig:
               OriginAccessIdentity:
