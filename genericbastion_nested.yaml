@@ -84,9 +84,6 @@ Resources:
       SecurityGroupIds:
         - Fn::ImportValue:
             !Sub "${SGStackName}-BastionSG"
-      SubnetId:
-        Fn::ImportValue:
-          !Sub "${VPCStackName}-PublicSubnetA"
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
