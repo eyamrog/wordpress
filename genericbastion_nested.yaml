@@ -81,9 +81,6 @@ Resources:
               - "yum -y update\n"
       InstanceType: !Ref BastionInstanceTypeName
       Monitoring: false
-      SecurityGroupIds:
-        - Fn::ImportValue:
-            !Sub "${SGStackName}-BastionSG"
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
@@ -94,6 +91,9 @@ Resources:
           SubnetId:
             Fn::ImportValue:
               !Sub "${VPCStackName}-PublicSubnetA"
+          GroupSet:
+            - Fn::ImportValue:
+                !Sub "${SGStackName}-BastionSG"
           AssociatePublicIpAddress: true
           DeleteOnTermination: true
 Outputs:
