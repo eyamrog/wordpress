@@ -11,7 +11,7 @@ Deploy the CloudFormation Stacks in this order:
 - WebVPC: VPC Stack
 - WebSG: Security Group Stack
 - AMILookUp: Lambda Function to determine the latest Amazon Linux AMI Id
-- Bsation: Bastion Instance
+- Bastion: Bastion Instance
 - WebRDS: RDS Instance Stack
 - WebALB: Application Load Balancing Stack
 - Prepare the WordPress AMIs that will be utilized by WebASG
