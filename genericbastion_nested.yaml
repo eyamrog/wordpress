@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates Auto Scaling Groups for Web Servers
+Parameters:
+  VPCStackName:
+    Description: Name of the stack that contains the VPC resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default: WebVPC
+  SGStackName:
+    Description: Name of the stack that contains the Security Group resources
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default: WebSG
+  BastionInstanceTypeName:
+    Description: Name of the wanted Instance Type
+    Type: String
+    MinLength: 1
+    MaxLength: 15
+    AllowedPattern: ^[a-z.A-Z][-a-z.A-Z0-9]*$
+    Default: t2.micro
+  BastionKeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the Bastion instance
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Default: AWS20171012Coda
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+  AMILookUpName:
+    Description: Name of the stack that contains the Lambda Function to determine the latest Amazon Linux AMI Id
+    Type: String
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default: AMILookUp
+Resources:
+  BastionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: S3-Admin-Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: S3AdminAccess
+                Effect: Allow
+                Action: s3:*
+                Resource: "*"
+  BastionInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: /
+      Roles:
+        - !Ref BastionRole
+  BastionInstance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      Tags:
+        - Key: Name
+          Value: BastionInstance
+      ImageId:
+        - Fn::ImportValue:
+            !Sub "${AMILookUpName}-AMIId"
+      IamInstanceProfile: !Ref BastionInstanceProfile
+      KeyName: !Ref BastionKeyName
+      EbsOptimized: false
+      UserData:
+        Fn::Base64:
+          !Join
+            - ""
+            - - "#!/bin/bash\n"
+              - "yum -y update\n"
+      InstanceType: !Ref BastionInstanceTypeName
+      Monitoring: false
+      SecurityGroupIds:
+        - Fn::ImportValue:
+            !Sub "${SGStackName}-BastionSG"
+      SubnetId:
+        - Fn::ImportValue:
+            !Sub "${VPCStackName}-PublicSubnetA"
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+      NetworkInterfaces:
+        Description: Bastion Instance public network interface
+        DeviceIndex: 0
+        SubnetId:
+          - Fn::ImportValue:
+              !Sub "${VPCStackName}-PublicSubnetA"
+        AssociatePublicIpAddress: true
+        DeleteOnTermination: true
+Outputs:
+  BastionInstanceId:
+    Description: Bastion Instance InstanceId
+    Value: !Ref BastionInstance
+    Export:
+      Name: !Sub "${AWS::StackName}-BastionInstanceId"
+  BastionInstancePublicIp:
+    Description: Bastion Instance Public IP Address
+    Value:
+      !GetAtt
+        - BastionInstance
+        - PublicIp
+    Export:
+      Name: !Sub "${AWS::StackName}-BastionInstancePublicIp"
+  BastionInstancePrivateIp:
+    Description: Bastion Instance Private IP Address
+    Value:
+      !GetAtt
+        - BastionInstance
+        - PrivateIp
+    Export:
+      Name: !Sub "${AWS::StackName}-BastionInstancePrivateIp"

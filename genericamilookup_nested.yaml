@@ -73,11 +73,11 @@ Resources:
                   - ec2:DescribeImages
                 Resource: "*"
 Outputs:
-  AMIID:
-    Description: The latest Amazon Linux AMI ID
+  AMIId:
+    Description: The latest Amazon Linux AMI Id
     Value:
       !GetAtt
         - AMIInfo
         - Id
     Export:
-      Name: !Sub "${AWS::StackName}-AMIID"
+      Name: !Sub "${AWS::StackName}-AMIId"
