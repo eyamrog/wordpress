@@ -85,8 +85,8 @@ Resources:
         - Fn::ImportValue:
             !Sub "${SGStackName}-BastionSG"
       SubnetId:
-        - Fn::ImportValue:
-            !Sub "${VPCStackName}-PublicSubnetA"
+        Fn::ImportValue:
+          !Sub "${VPCStackName}-PublicSubnetA"
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
@@ -95,8 +95,8 @@ Resources:
         - Description: Bastion Instance public network interface
           DeviceIndex: 0
           SubnetId:
-            - Fn::ImportValue:
-                !Sub "${VPCStackName}-PublicSubnetA"
+            Fn::ImportValue:
+              !Sub "${VPCStackName}-PublicSubnetA"
           AssociatePublicIpAddress: true
           DeleteOnTermination: true
 Outputs:
