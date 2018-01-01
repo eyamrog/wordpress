@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Creates Auto Scaling Groups for Web Servers
+Description: Creates a Bastion Instance
 Parameters:
   VPCStackName:
     Description: Name of the stack that contains the VPC resources
@@ -68,8 +68,8 @@ Resources:
         - Key: Name
           Value: BastionInstance
       ImageId:
-        - Fn::ImportValue:
-            !Sub "${AMILookUpName}-AMIId"
+        Fn::ImportValue:
+          !Sub "${AMILookUpName}-AMIId"
       IamInstanceProfile: !Ref BastionInstanceProfile
       KeyName: !Ref BastionKeyName
       EbsOptimized: false
@@ -81,24 +81,21 @@ Resources:
               - "yum -y update\n"
       InstanceType: !Ref BastionInstanceTypeName
       Monitoring: false
-      SecurityGroupIds:
-        - Fn::ImportValue:
-            !Sub "${SGStackName}-BastionSG"
-      SubnetId:
-        - Fn::ImportValue:
-            !Sub "${VPCStackName}-PublicSubnetA"
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: 8
       NetworkInterfaces:
-        Description: Bastion Instance public network interface
-        DeviceIndex: 0
-        SubnetId:
-          - Fn::ImportValue:
+        - Description: Bastion Instance public network interface
+          DeviceIndex: 0
+          SubnetId:
+            Fn::ImportValue:
               !Sub "${VPCStackName}-PublicSubnetA"
-        AssociatePublicIpAddress: true
-        DeleteOnTermination: true
+          GroupSet:
+            - Fn::ImportValue:
+                !Sub "${SGStackName}-BastionSG"
+          AssociatePublicIpAddress: true
+          DeleteOnTermination: true
 Outputs:
   BastionInstanceId:
     Description: Bastion Instance InstanceId
