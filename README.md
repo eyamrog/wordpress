@@ -10,6 +10,8 @@ Deploy the CloudFormation Stacks in this order:
 - WebCFD: CloudFront Stack. Take note of the Distribution DNS Name for configuring the .htaccess file. Update the S3 Media Bucket with the policy in "wpmediabucketpolicy.json"
 - WebVPC: VPC Stack
 - WebSG: Security Group Stack
+- AMILookUp: Lambda Function to determine the latest Amazon Linux AMI Id
+- Bsation: Bastion Instance
 - WebRDS: RDS Instance Stack
 - WebALB: Application Load Balancing Stack
 - Prepare the WordPress AMIs that will be utilized by WebASG
